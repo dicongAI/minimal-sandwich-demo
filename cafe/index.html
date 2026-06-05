@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>极简三明治 · 咖啡手绘风演示</title>
+  <style>
+    :root {
+      --cream: #efe6d8;
+      --paper: #fbfaf6;
+      --card: #eee6d8;
+      --ink: #181512;
+      --brown: #6d4632;
+      --muted: #8a8178;
+      --green: #3b8a54;
+      --orange: #d39b53;
+      --line: #221f1c;
+      --shadow: rgba(75, 54, 39, .09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #e8e1d6;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    button,
+    textarea { font: inherit; }
+
+    .phone {
+      width: min(430px, 100vw);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding-bottom: 96px;
+      background: var(--paper);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .top {
+      min-height: 426px;
+      padding: 16px 20px 24px;
+      background: linear-gradient(#eee5d6 0 86px, var(--paper) 86px);
+      text-align: center;
+      position: relative;
+      border-bottom: 1px solid rgba(109, 70, 50, .08);
+    }
+
+    .statusbar {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 22px;
+      font-weight: 1000;
+      color: #050505;
+    }
+
+    .status-icons {
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+
+    .mini-title {
+      margin-top: 32px;
+      font-size: 18px;
+      font-weight: 1000;
+    }
+
+    .wechat-pill {
+      position: absolute;
+      right: 20px;
+      top: 70px;
+      width: 92px;
+      height: 42px;
+      border-radius: 999px;
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      place-items: center;
+      background: rgba(255,255,255,.76);
+      box-shadow: 0 8px 18px rgba(0,0,0,.05);
+      font-size: 22px;
+      font-weight: 1000;
+    }
+
+    .wechat-pill i {
+      width: 1px;
+      height: 26px;
+      background: rgba(0,0,0,.12);
+    }
+
+    .logo-wrap {
+      width: 276px;
+      height: 238px;
+      margin: 42px auto 18px;
+      position: relative;
+      color: var(--brown);
+    }
+
+    .arc {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 292px;
+      transform: translateX(-50%);
+      font-size: 25px;
+      font-weight: 1000;
+      letter-spacing: 8px;
+      color: var(--brown);
+    }
+
+    .arc span {
+      display: inline-block;
+      transform-origin: 50% 138px;
+    }
+
+    .mascot {
+      position: absolute;
+      left: 50%;
+      top: 72px;
+      width: 148px;
+      height: 132px;
+      transform: translateX(-50%);
+    }
+
+    .box {
+      position: absolute;
+      left: 19px;
+      right: 19px;
+      bottom: 0;
+      height: 70px;
+      border: 5px solid var(--brown);
+      border-radius: 10px 10px 18px 18px;
+      background: #e9aa6b;
+    }
+
+    .box:after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 23px;
+      width: 13px;
+      height: 24px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: var(--brown);
+    }
+
+    .toast {
+      position: absolute;
+      left: 32px;
+      top: 10px;
+      width: 84px;
+      height: 98px;
+      border: 6px solid var(--brown);
+      border-radius: 34px 34px 22px 22px;
+      background: #fff2d7;
+      z-index: 2;
+    }
+
+    .toast:before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: -7px;
+      width: 58px;
+      height: 26px;
+      border-radius: 18px 18px 8px 8px;
+      background: var(--green);
+      border: 5px solid var(--brown);
+      border-bottom: 0;
+    }
+
+    .toast:after {
+      content: "";
+      position: absolute;
+      right: -3px;
+      top: -10px;
+      width: 28px;
+      height: 28px;
+      border-radius: 12px;
+      background: #d49b54;
+      border: 5px solid var(--brown);
+    }
+
+    .face {
+      position: absolute;
+      inset: 38px 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .face i {
+      width: 8px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--brown);
+    }
+
+    .mouth {
+      position: absolute;
+      left: 50%;
+      top: 58px;
+      width: 11px;
+      height: 6px;
+      border-bottom: 4px solid var(--brown);
+      border-radius: 0 0 12px 12px;
+      transform: translateX(-50%);
+    }
+
+    .hands {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 80px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 3;
+    }
+
+    .hands i {
+      width: 28px;
+      height: 18px;
+      border-radius: 999px;
+      border: 5px solid var(--brown);
+      background: #fff2d7;
+    }
+
+    .brand-line {
+      color: var(--brown);
+      font-size: 28px;
+      font-weight: 1000;
+      letter-spacing: 8px;
+      white-space: nowrap;
+    }
+
+    .sub-line {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 3px;
+      font-weight: 800;
+    }
+
+    .content {
+      padding: 28px 14px 26px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .choice-card,
+    .feature-card,
+    .section-card,
+    .product-card,
+    .profile-card {
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: 0 10px 24px var(--shadow);
+    }
+
+    .choice-card {
+      min-height: 168px;
+      padding: 22px 14px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .choice-icon {
+      width: 64px;
+      height: 58px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .bag {
+      width: 58px;
+      height: 50px;
+      margin: 4px auto 0;
+      border: 3px solid var(--line);
+      border-radius: 4px;
+      background: #fbfaf6;
+      position: relative;
+    }
+
+    .bag:before {
+      content: "";
+      position: absolute;
+      left: 11px;
+      right: 11px;
+      top: -4px;
+      height: 12px;
+      border: 3px solid var(--line);
+      border-bottom: 0;
+      border-radius: 5px 5px 0 0;
+      background: #fbfaf6;
+    }
+
+    .bag:after {
+      content: "";
+      position: absolute;
+      right: 13px;
+      top: 8px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--orange);
+    }
+
+    .scooter {
+      width: 70px;
+      height: 52px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .scooter:before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      top: 12px;
+      width: 38px;
+      height: 24px;
+      border: 3px solid var(--line);
+      border-radius: 20px 20px 10px 10px;
+      background: #fbfaf6;
+    }
+
+    .scooter:after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      bottom: 2px;
+      width: 56px;
+      height: 20px;
+      border-bottom: 3px solid var(--line);
+      border-radius: 50%;
+      box-shadow: 8px 8px 0 -3px #fbfaf6, 8px 8px 0 0 var(--line), 42px 8px 0 -3px #fbfaf6, 42px 8px 0 0 var(--line);
+    }
+
+    .choice-card h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 3px;
+    }
+
+    .choice-card p {
+      margin: 10px 0 0;
+      font-size: 13px;
+      letter-spacing: 7px;
+      font-weight: 800;
+    }
+
+    .feature-layout {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .feature-card {
+      min-height: 196px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .feature-card.large {
+      min-height: 196px;
+    }
+
+    .feature-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .feature-stack .feature-card {
+      min-height: 90px;
+    }
+
+    .feature-card h3 {
+      margin: 0;
+      font-size: 23px;
+      letter-spacing: 2px;
+    }
+
+    .feature-card p {
+      margin: 8px 0 0;
+      font-size: 13px;
+      letter-spacing: 5px;
+      font-weight: 800;
+    }
+
+    .line-art {
+      position: absolute;
+      right: 18px;
+      bottom: 16px;
+      color: var(--line);
+      font-size: 48px;
+    }
+
+    .section-title {
+      margin: 28px 2px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .product-card {
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 76px 1fr 40px;
+      gap: 12px;
+      align-items: center;
+      background: #fffdfa;
+      border: 1px solid rgba(109, 70, 50, .08);
+    }
+
+    .food {
+      width: 76px;
+      height: 76px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      font-size: 40px;
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: 1000;
+    }
+
+    .tags {
+      margin-top: 6px;
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #f0e3cf;
+      color: var(--brown);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .price {
+      margin-top: 7px;
+      color: #c75b37;
+      font-size: 21px;
+      font-weight: 1000;
+    }
+
+    .add-btn,
+    .primary-btn {
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--brown);
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .add-btn {
+      width: 38px;
+      height: 38px;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .menu-head {
+      padding: 18px 20px 22px;
+      text-align: center;
+      background: var(--cream);
+      border-bottom: 1px solid rgba(109, 70, 50, .1);
+    }
+
+    .menu-head h1,
+    .plain h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 3px;
+    }
+
+    .menu-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      letter-spacing: 2px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tabs {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .tab {
+      height: 42px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #fffaf2;
+      border: 1px solid rgba(109,70,50,.12);
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: #fff;
+      background: var(--brown);
+    }
+
+    .plain {
+      padding: 22px 16px;
+    }
+
+    .section-card,
+    .profile-card {
+      margin-top: 14px;
+      padding: 18px;
+      background: #fffdfa;
+    }
+
+    .section-card h2,
+    .profile-card h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .mode {
+      height: 44px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .mode.active {
+      color: #fff;
+      background: var(--brown);
+    }
+
+    .line {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee2d3;
+    }
+
+    .line:last-child { border-bottom: 0; }
+
+    .mini-food {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      font-size: 29px;
+    }
+
+    .amount-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      color: #6f6258;
+    }
+
+    .amount-row.pay {
+      margin-top: 8px;
+      color: var(--ink);
+      font-size: 22px;
+      font-weight: 1000;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 76px;
+      padding: 13px;
+      border: 0;
+      border-radius: 18px;
+      outline: none;
+      resize: none;
+      background: var(--cream);
+    }
+
+    .primary-btn {
+      min-height: 48px;
+      padding: 0 18px;
+      font-size: 16px;
+    }
+
+    .pay-btn {
+      width: 100%;
+      margin-top: 14px;
+      min-height: 52px;
+      font-size: 18px;
+    }
+
+    .cart-bar {
+      position: fixed;
+      left: 50%;
+      bottom: 84px;
+      z-index: 20;
+      width: min(386px, calc(100vw - 32px));
+      min-height: 64px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(-50%);
+      color: #fff;
+      background: var(--brown);
+      box-shadow: 0 14px 28px rgba(75,54,39,.2);
+    }
+
+    .cart-bar.active { display: flex; }
+
+    .cart-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--brown);
+      background: var(--cream);
+      font-size: 24px;
+    }
+
+    .cart-meta { flex: 1; }
+    .cart-meta small { color: #eadfce; }
+
+    .profile-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      font-size: 42px;
+    }
+
+    .profile-tabs {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .profile-tab {
+      height: 38px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .profile-tab.active {
+      color: #fff;
+      background: var(--brown);
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 12px;
+      z-index: 30;
+      width: min(398px, calc(100vw - 28px));
+      height: 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      transform: translateX(-50%);
+      background: rgba(255,255,255,.96);
+      border-radius: 23px;
+      box-shadow: 0 10px 28px rgba(75,54,39,.16);
+    }
+
+    .nav {
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 3px;
+      color: #888;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .nav b {
+      font-size: 24px;
+      line-height: 1;
+      opacity: .55;
+    }
+
+    .nav.active { color: var(--ink); }
+    .nav.active b { opacity: 1; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: flex-end;
+      background: rgba(0,0,0,.38);
+    }
+
+    .modal.center {
+      align-items: center;
+      padding: 26px;
+    }
+
+    .modal.active { display: flex; }
+
+    .sheet,
+    .dialog {
+      width: min(430px, 100vw);
+      margin: 0 auto;
+      padding: 22px;
+      background: #fffdfa;
+    }
+
+    .sheet { border-radius: 28px 28px 0 0; }
+    .dialog { border-radius: 28px; text-align: center; }
+
+    .sheet-visual,
+    .dialog-visual {
+      height: 132px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      font-size: 66px;
+    }
+
+    .dialog-visual {
+      width: 150px;
+      height: 120px;
+      margin: 0 auto 10px;
+    }
+
+    .sheet h2,
+    .dialog h2 {
+      margin: 16px 0 8px;
+      font-size: 24px;
+    }
+
+    .addon-row {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .addon {
+      padding: 9px 13px;
+      border-radius: 999px;
+      border: 1px solid #d7cbb9;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .addon.active {
+      color: #fff;
+      border-color: var(--brown);
+      background: var(--brown);
+    }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .ghost-btn {
+      border: 0;
+      border-radius: 999px;
+      color: #333;
+      background: var(--cream);
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 42px 16px;
+    }
+
+    .empty div:first-child {
+      font-size: 70px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <section id="home" class="page active">
+      <div class="top">
+        <div class="statusbar"><span>13:55</span><span class="status-icons">▮▮▮ WiFi 🔋</span></div>
+        <div class="mini-title">极简三明治</div>
+        <div class="wechat-pill"><span>•••</span><i></i><span>◎</span></div>
+        <div class="logo-wrap">
+          <div class="arc" id="arcText"></div>
+          <div class="mascot">
+            <div class="toast"><div class="face"><i></i><i></i></div><div class="mouth"></div></div>
+            <div class="hands"><i></i><i></i></div>
+            <div class="box"></div>
+          </div>
+        </div>
+        <div class="brand-line">叮咚 · 三明治 | 饭团 | 轻食</div>
+        <div class="sub-line">今日营业 08:00 - 20:00 · 营业中</div>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <div class="choice-card mode active" data-delivery="pickup"><div class="choice-icon"><div class="bag"></div></div><h2>门店自取</h2><p>提前点 到店取</p></div>
+          <div class="choice-card mode" data-delivery="delivery"><div class="choice-icon"><div class="scooter"></div></div><h2>外卖配送</h2><p>线上点 在家吃</p></div>
+        </div>
+
+        <div class="feature-layout">
+          <div class="feature-card large" data-nav="menu"><h3>预约点单›</h3><p>ORDER AHEAD</p><div class="line-art">🥪</div></div>
+          <div class="feature-stack">
+            <div class="feature-card" id="claimFromCard"><h3>领券中心</h3><p>RECEIVE COUPON</p><div class="line-art" style="font-size:38px;">🎟️</div></div>
+            <div class="feature-card" data-nav="profile"><h3>我的积分</h3><p>POINTS</p><div class="line-art" style="font-size:38px;">🪙</div></div>
+          </div>
+        </div>
+
+        <div class="section-title"><h2>快捷入口</h2><span>只保留核心分类</span></div>
+        <div class="card-grid">
+          <div class="choice-card" data-category-jump="sandwich"><div class="choice-icon" style="font-size:42px;">🍞</div><h2>全麦</h2><p>SANDWICH</p></div>
+          <div class="choice-card" data-category-jump="sandwich"><div class="choice-icon" style="font-size:42px;">🥚</div><h2>厚切</h2><p>HOT SALE</p></div>
+          <div class="choice-card" data-category-jump="set"><div class="choice-icon" style="font-size:42px;">🥪</div><h2>套餐</h2><p>COMBO</p></div>
+          <div class="choice-card" data-category-jump="drink"><div class="choice-icon" style="font-size:42px;">🥤</div><h2>饮品</h2><p>DRINKS</p></div>
+        </div>
+
+        <div class="section-title"><h2>推荐商品</h2><span data-nav="menu">更多›</span></div>
+        <div class="product-list" id="recommendList"></div>
+      </div>
+    </section>
+
+    <section id="menu" class="page">
+      <div class="menu-head">
+        <h1>点单</h1>
+        <p>三明治 · 套餐 · 饮品</p>
+        <div class="tabs">
+          <div class="tab active" data-category="sandwich">三明治</div>
+          <div class="tab" data-category="set">套餐</div>
+          <div class="tab" data-category="drink">饮品</div>
+        </div>
+      </div>
+      <div class="content"><div class="product-list" id="menuList"></div></div>
+    </section>
+
+    <section id="checkout" class="page plain">
+      <h1>结算</h1>
+      <div id="checkoutContent"></div>
+    </section>
+
+    <section id="profile" class="page plain">
+      <h1>我的</h1>
+      <div class="profile-card">
+        <div class="profile-head">
+          <div class="avatar">🥪</div>
+          <div><div style="font-size:22px;font-weight:1000;">三明治用户</div><div style="color:var(--muted);margin-top:4px;">订单 · 优惠券 · 积分</div></div>
+        </div>
+        <div class="profile-tabs">
+          <div class="profile-tab active" data-profile="orders">我的订单</div>
+          <div class="profile-tab" data-profile="coupons">我的优惠券</div>
+          <div class="profile-tab" data-profile="points">我的积分</div>
+        </div>
+      </div>
+      <div id="profileContent"></div>
+    </section>
+
+    <div class="cart-bar" id="cartBar">
+      <div class="cart-icon">🧺</div>
+      <div class="cart-meta"><small id="cartCount">已选 0 件</small><div id="cartAmount" style="font-weight:1000;">合计 ¥0</div></div>
+      <button class="primary-btn" data-nav="checkout">去结算</button>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav active" data-nav="home"><b>⌂</b><span>首页</span></div>
+    <div class="nav" data-nav="menu"><b>◉</b><span>点单</span></div>
+    <div class="nav" data-nav="checkout"><b>▤</b><span>结算</span></div>
+    <div class="nav" data-nav="profile"><b>♙</b><span>我的</span></div>
+  </nav>
+
+  <div class="modal" id="specModal"><div class="sheet" id="specContent"></div></div>
+  <div class="modal center active" id="couponModal">
+    <div class="dialog">
+      <div class="dialog-visual">🎟️</div>
+      <h2>新人专享</h2>
+      <p style="color:var(--muted);">3元无门槛优惠券</p>
+      <button class="primary-btn" style="width:100%;" id="claimCoupon">立即领取</button>
+    </div>
+  </div>
+  <div class="modal center" id="deliveryModal">
+    <div class="dialog">
+      <div class="dialog-visual">🛵</div>
+      <h2>订单配送中</h2>
+      <p style="color:var(--muted);line-height:1.5;">您的订单正在配送中，请您耐心等待。预计 30 分钟送达。</p>
+      <button class="primary-btn" style="width:100%;" id="closeDelivery">知道了</button>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: "p1", name: "厚切鸡蛋三明治", category: "sandwich", price: 18, icon: "🥚", tags: ["热卖", "高蛋白"], egg: true, cheese: true },
+      { id: "p2", name: "全麦鸡胸三明治", category: "sandwich", price: 22, icon: "🍗", tags: ["低脂", "轻食"], egg: true, cheese: false },
+      { id: "p3", name: "芝士火腿三明治", category: "sandwich", price: 20, icon: "🧀", tags: ["芝士", "香浓"], egg: true, cheese: true },
+      { id: "p4", name: "早餐能量套餐", category: "set", price: 29, icon: "🥪", tags: ["套餐", "饮品搭配"], egg: true, cheese: true },
+      { id: "p5", name: "午间轻食套餐", category: "set", price: 35, icon: "🥗", tags: ["沙拉", "果茶"], egg: false, cheese: true },
+      { id: "p6", name: "冰美式", category: "drink", price: 12, icon: "☕", tags: ["冰饮", "清爽"], egg: false, cheese: false },
+      { id: "p7", name: "柠檬果茶", category: "drink", price: 15, icon: "🍋", tags: ["果茶", "冰爽"], egg: false, cheese: false }
+    ];
+
+    const state = {
+      page: "home",
+      deliveryType: "pickup",
+      category: "sandwich",
+      profileTab: "orders",
+      couponClaimed: false,
+      cart: [],
+      orders: []
+    };
+
+    function drawArc() {
+      const text = "SANDWICH&COFFEE";
+      const wrap = document.getElementById("arcText");
+      wrap.innerHTML = text.split("").map((letter, index) => {
+        const angle = -62 + index * (124 / (text.length - 1));
+        return `<span style="transform:rotate(${angle}deg)">${letter}</span>`;
+      }).join("");
+    }
+
+    const money = value => Number(value).toFixed(0);
+    const itemTotal = item => (item.price + item.addOns.reduce((sum, add) => sum + add.price, 0)) * item.qty;
+    const cartTotal = () => state.cart.reduce((sum, item) => sum + itemTotal(item), 0);
+    const checkoutAmount = () => {
+      const goods = cartTotal();
+      const deliveryFee = state.deliveryType === "delivery" && goods > 0 ? 3 : 0;
+      const discount = goods >= 39 ? 5 : state.couponClaimed && goods > 0 ? 3 : 0;
+      return { goods, deliveryFee, discount, pay: Math.max(goods + deliveryFee - discount, 0) };
+    };
+
+    function setPage(page) {
+      state.page = page;
+      document.querySelectorAll(".page").forEach(el => el.classList.toggle("active", el.id === page));
+      document.querySelectorAll(".nav").forEach(el => el.classList.toggle("active", el.dataset.nav === page));
+      render();
+    }
+
+    function productCard(product) {
+      return `<div class="product-card">
+        <div class="food">${product.icon}</div>
+        <div><div class="product-name">${product.name}</div><div class="tags">${product.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div><div class="price">¥${product.price}</div></div>
+        <button class="add-btn" data-product="${product.id}">+</button>
+      </div>`;
+    }
+
+    function renderProducts() {
+      document.getElementById("recommendList").innerHTML = products.slice(0, 3).map(productCard).join("");
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.category === state.category));
+      document.getElementById("menuList").innerHTML = products.filter(p => p.category === state.category).map(productCard).join("");
+    }
+
+    function openSpec(id) {
+      const product = products.find(item => item.id === id);
+      document.getElementById("specContent").innerHTML = `<div class="sheet-visual">${product.icon}</div>
+        <h2>${product.name}</h2>
+        <div style="color:#c75b37;font-size:26px;font-weight:1000;">¥${product.price}</div>
+        <div class="addon-row">
+          ${product.egg ? `<div class="addon" data-addon="加蛋" data-price="3">加蛋 +3元</div>` : ""}
+          ${product.cheese ? `<div class="addon" data-addon="芝士" data-price="3">芝士 +3元</div>` : ""}
+        </div>
+        <textarea placeholder="备注：不要洋葱、少酱、加热"></textarea>
+        <div class="sheet-actions"><button class="ghost-btn" id="closeSpec">取消</button><button class="primary-btn" data-add="${product.id}">加入购物车</button></div>`;
+      document.getElementById("specModal").classList.add("active");
+    }
+
+    function addCart(id) {
+      const product = products.find(item => item.id === id);
+      const addOns = [...document.querySelectorAll(".addon.active")].map(el => ({ name: el.dataset.addon, price: Number(el.dataset.price) }));
+      const key = [id, addOns.map(add => add.name).join("|")].join("__");
+      const exists = state.cart.find(item => item.key === key);
+      if (exists) exists.qty += 1;
+      else state.cart.push({ ...product, key, qty: 1, addOns });
+      document.getElementById("specModal").classList.remove("active");
+      render();
+    }
+
+    function renderCart() {
+      const count = state.cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById("cartBar").classList.toggle("active", state.page === "menu" && count > 0);
+      document.getElementById("cartCount").textContent = `已选 ${count} 件`;
+      document.getElementById("cartAmount").textContent = `合计 ¥${money(cartTotal())}`;
+    }
+
+    function renderCheckout() {
+      const wrap = document.getElementById("checkoutContent");
+      if (!state.cart.length) {
+        wrap.innerHTML = `<div class="section-card empty"><div>🥪</div><p>购物车空空的，去点一份三明治吧。</p></div>`;
+        return;
+      }
+      const amount = checkoutAmount();
+      wrap.innerHTML = `<div class="section-card"><h2>配送方式</h2><div class="mode-row"><div class="mode ${state.deliveryType === "pickup" ? "active" : ""}" data-delivery="pickup">门店自取</div><div class="mode ${state.deliveryType === "delivery" ? "active" : ""}" data-delivery="delivery">外卖配送</div></div></div>
+      <div class="section-card"><h2>${state.deliveryType === "delivery" ? "收货地址" : "自提门店"}</h2><b>${state.deliveryType === "delivery" ? "阳光中心 A 座 12 层" : "极简三明治·中心店"}</b><p style="color:var(--muted);">${state.deliveryType === "delivery" ? "小明 13800000000" : "自提时间：立即自提"}</p></div>
+      <div class="section-card"><h2>商品确认</h2>${state.cart.map(item => `<div class="line"><div class="mini-food">${item.icon}</div><div><b>${item.name}</b><br><span style="color:var(--muted);">x${item.qty} ${item.addOns.map(a => a.name).join(" / ")}</span></div><b>¥${money(itemTotal(item))}</b></div>`).join("")}</div>
+      <div class="section-card"><div class="amount-row"><span>优惠券</span><span>${amount.discount ? `已优惠 ${amount.discount} 元` : "暂无可用"}</span></div><div class="amount-row"><span>商品金额</span><span>¥${money(amount.goods)}</span></div><div class="amount-row"><span>配送费</span><span>¥${money(amount.deliveryFee)}</span></div><div class="amount-row"><span>优惠金额</span><span>-¥${money(amount.discount)}</span></div><div class="amount-row pay"><span>实付金额</span><span>¥${money(amount.pay)}</span></div></div>
+      <div class="section-card"><h2>备注</h2><textarea placeholder="少酱、加热、放前台"></textarea><button class="primary-btn pay-btn" id="payBtn">微信支付 ¥${money(amount.pay)}</button></div>`;
+    }
+
+    function pay() {
+      const amount = checkoutAmount();
+      state.orders.unshift({ id: `S${Date.now().toString().slice(-6)}`, status: state.deliveryType === "delivery" ? "配送中" : "待自提", items: state.cart.map(item => ({ ...item })), pay: amount.pay });
+      state.cart = [];
+      document.getElementById("deliveryModal").classList.add("active");
+      render();
+    }
+
+    function renderProfile() {
+      document.querySelectorAll(".profile-tab").forEach(tab => tab.classList.toggle("active", tab.dataset.profile === state.profileTab));
+      const wrap = document.getElementById("profileContent");
+      if (state.profileTab === "orders") {
+        wrap.innerHTML = state.orders.length ? state.orders.map(order => `<div class="profile-card"><div style="display:flex;justify-content:space-between;font-weight:1000;"><span>订单 ${order.id}</span><span>${order.status}</span></div>${order.items.map(item => `<div class="line"><div class="mini-food">${item.icon}</div><div><b>${item.name}</b><br><span style="color:var(--muted);">x${item.qty}</span></div><b>¥${money(itemTotal(item))}</b></div>`).join("")}<div class="amount-row pay"><span></span><span>实付 ¥${money(order.pay)}</span></div></div>`).join("") : `<div class="profile-card empty"><div>🥪</div><p>还没有订单，去点一份三明治吧。</p></div>`;
+      }
+      if (state.profileTab === "coupons") wrap.innerHTML = `<div class="profile-card"><h2>我的优惠券</h2><div class="line"><div class="mini-food">🎟️</div><div><b>3元无门槛优惠券</b><br><span style="color:var(--muted);">${state.couponClaimed ? "未使用" : "首页可领取"}</span></div><b>›</b></div><div class="line"><div class="mini-food">🎫</div><div><b>满39减5</b><br><span style="color:var(--muted);">默认最优使用</span></div><b>›</b></div></div>`;
+      if (state.profileTab === "points") wrap.innerHTML = `<div class="profile-card"><h2>我的积分</h2><div style="font-size:54px;font-weight:1000;">0</div><p style="color:var(--muted);">积分只用于兑换单品，不做会员等级、储值、月卡。</p></div>`;
+    }
+
+    function render() {
+      renderProducts();
+      renderCart();
+      renderCheckout();
+      renderProfile();
+    }
+
+    document.addEventListener("click", event => {
+      const nav = event.target.closest("[data-nav]");
+      if (nav) setPage(nav.dataset.nav);
+
+      const delivery = event.target.closest("[data-delivery]");
+      if (delivery) {
+        state.deliveryType = delivery.dataset.delivery;
+        document.querySelectorAll("[data-delivery]").forEach(el => el.classList.toggle("active", el.dataset.delivery === state.deliveryType));
+        render();
+      }
+
+      const jump = event.target.closest("[data-category-jump]");
+      if (jump) {
+        state.category = jump.dataset.categoryJump;
+        setPage("menu");
+      }
+
+      const category = event.target.closest("[data-category]");
+      if (category) {
+        state.category = category.dataset.category;
+        render();
+      }
+
+      const product = event.target.closest("[data-product]");
+      if (product) openSpec(product.dataset.product);
+
+      const addon = event.target.closest(".addon");
+      if (addon) addon.classList.toggle("active");
+
+      const add = event.target.closest("[data-add]");
+      if (add) addCart(add.dataset.add);
+
+      if (event.target.id === "closeSpec" || event.target.id === "specModal") document.getElementById("specModal").classList.remove("active");
+      if (event.target.id === "claimCoupon" || event.target.id === "claimFromCard") { state.couponClaimed = true; document.getElementById("couponModal").classList.remove("active"); render(); }
+      if (event.target.id === "payBtn") pay();
+      if (event.target.id === "closeDelivery") { document.getElementById("deliveryModal").classList.remove("active"); setPage("profile"); }
+
+      const profile = event.target.closest("[data-profile]");
+      if (profile) { state.profileTab = profile.dataset.profile; render(); }
+    });
+
+    drawArc();
+    render();
+  </script>
+</body>
+</html>
