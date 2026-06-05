@@ -3,93 +3,81 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>潜水的三明治演示版</title>
+  <title>极简三明治小程序演示版</title>
   <style>
     :root {
-      --green: #07933d;
-      --fresh: #20c15a;
-      --purple: #6f32a8;
-      --deep: #21112f;
-      --orange: #ff6b35;
-      --text: #191919;
+      --green: #079a3f;
+      --fresh: #21c960;
+      --purple: #6d31a6;
+      --purple-dark: #24112f;
+      --orange: #ff6740;
+      --text: #171717;
       --muted: #777;
-      --line: #ececec;
       --bg: #f5f5f5;
+      --card: #fff;
+      --line: #eeeeee;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
-      background: #e9e9e9;
+      background: #e8e8e8;
     }
 
-    button,
-    textarea {
-      font: inherit;
-    }
+    button, textarea { font: inherit; }
 
     .phone {
       width: min(430px, 100vw);
       min-height: 100vh;
       margin: 0 auto;
-      padding-bottom: 88px;
+      padding-bottom: 86px;
       background: var(--bg);
       position: relative;
       overflow-x: hidden;
     }
 
-    .page {
-      display: none;
-    }
+    .page { display: none; }
+    .page.active { display: block; }
 
-    .page.active {
-      display: block;
-    }
-
-    .hero {
-      height: 286px;
+    .top-hero {
+      height: 282px;
       padding: 14px 22px 0;
-      color: #fff;
       position: relative;
       overflow: hidden;
+      color: #fff;
       background:
-        radial-gradient(circle at 52% 0%, rgba(255, 168, 249, .75), transparent 36%),
-        radial-gradient(circle at 86% 34%, rgba(124, 31, 174, .95), transparent 36%),
-        linear-gradient(140deg, #24112f 0%, #7532a6 52%, #251032 100%);
+        radial-gradient(circle at 54% 0%, rgba(230, 122, 255, .78), transparent 36%),
+        radial-gradient(circle at 90% 36%, rgba(135, 58, 200, .9), transparent 34%),
+        linear-gradient(145deg, #24112f 0%, #7434aa 54%, #23102f 100%);
     }
 
-    .hero:before {
+    .top-hero:before {
       content: "";
       position: absolute;
-      inset: -80px -40px auto auto;
-      width: 230px;
-      height: 230px;
+      right: -58px;
+      top: 68px;
+      width: 170px;
+      height: 170px;
       border-radius: 50%;
-      border: 24px solid rgba(180, 74, 255, .35);
-      filter: blur(.2px);
+      border: 22px solid rgba(194, 84, 255, .32);
     }
 
     .statusbar {
-      height: 36px;
+      height: 35px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      color: #050505;
+      color: #090909;
       font-size: 22px;
-      font-weight: 900;
+      font-weight: 1000;
       position: relative;
       z-index: 2;
     }
 
-    .status-icons {
-      font-size: 15px;
-      letter-spacing: 3px;
-    }
+    .status-icons { font-size: 14px; letter-spacing: 2px; }
 
     .hero-actions {
       margin-top: 18px;
@@ -100,334 +88,319 @@
       z-index: 2;
     }
 
-    .location {
-      width: 150px;
-      height: 38px;
-      padding: 0 14px;
+    .location-pill,
+    .mini-action,
+    .more-pill {
       border-radius: 999px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 16px;
-      font-weight: 700;
-      background: rgba(28, 12, 44, .7);
       backdrop-filter: blur(8px);
     }
 
-    .checkin {
+    .location-pill {
+      width: 158px;
+      height: 40px;
+      padding: 0 14px;
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px;
-      color: rgba(255,255,255,.72);
+      font-weight: 800;
+      background: rgba(27, 12, 44, .72);
     }
 
-    .checkin-icon,
-    .more-pill {
-      height: 44px;
-      border-radius: 999px;
+    .mini-action {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: rgba(255,255,255,.75);
+      font-size: 12px;
+    }
+
+    .mini-action b {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
       display: grid;
       place-items: center;
-      background: rgba(255,255,255,.72);
-      color: #171717;
-      font-weight: 900;
-    }
-
-    .checkin-icon {
-      width: 44px;
-      font-size: 22px;
+      color: #222;
+      background: rgba(255,255,255,.68);
+      font-size: 21px;
     }
 
     .more-pill {
-      width: 94px;
+      width: 92px;
+      height: 42px;
+      display: grid;
       grid-template-columns: 1fr 1px 1fr;
-      overflow: hidden;
+      place-items: center;
+      color: #111;
+      background: rgba(255,255,255,.76);
       font-size: 22px;
+      font-weight: 1000;
     }
 
-    .more-pill span:nth-child(2) {
-      height: 28px;
-      background: rgba(0,0,0,.1);
+    .more-pill i {
+      width: 1px;
+      height: 26px;
+      background: rgba(0,0,0,.12);
     }
 
-    .campaign-title {
+    .brand-title {
+      margin-top: 14px;
       position: relative;
       z-index: 2;
-      margin-top: 10px;
-      color: #31d253;
+      color: #2fd455;
       font-size: 42px;
-      line-height: .92;
+      line-height: .95;
       font-weight: 1000;
-      letter-spacing: -2px;
-      text-shadow: 0 3px 0 rgba(0,0,0,.12);
+      letter-spacing: -1.5px;
+      text-shadow: 0 3px 0 rgba(0,0,0,.16);
     }
 
-    .campaign-sub {
-      margin-top: 2px;
-      color: #ffe26b;
+    .brand-sub {
+      margin-top: 5px;
+      color: #ffe668;
       font-size: 12px;
       font-weight: 900;
       position: relative;
       z-index: 2;
     }
 
-    .sandwich-hero {
+    .sandwich-visual {
       position: absolute;
-      left: 78px;
-      right: -46px;
-      bottom: 12px;
-      height: 112px;
+      left: 74px;
+      right: -44px;
+      bottom: 18px;
+      height: 108px;
+      filter: drop-shadow(0 15px 18px rgba(0,0,0,.34));
       transform: rotate(-1deg);
-      filter: drop-shadow(0 15px 18px rgba(0,0,0,.32));
     }
 
     .bread {
       position: absolute;
       inset: 0;
-      border-radius: 46px 46px 22px 22px;
+      border-radius: 48px 48px 22px 22px;
       background:
-        radial-gradient(circle at 28% 18%, #ffe8a8, transparent 16%),
-        radial-gradient(circle at 50% 12%, #ffe8a8, transparent 14%),
-        linear-gradient(#ffd881, #f1b957);
+        radial-gradient(circle at 27% 18%, #ffecb0, transparent 16%),
+        radial-gradient(circle at 52% 12%, #ffecb0, transparent 14%),
+        linear-gradient(#ffd980, #f2b753);
     }
 
     .filling {
       position: absolute;
       left: 10px;
       right: 14px;
-      bottom: 20px;
-      height: 44px;
+      bottom: 19px;
+      height: 45px;
       border-radius: 16px;
       background:
-        linear-gradient(90deg, transparent 0 6%, #b84b21 6% 18%, transparent 18% 22%, #b84b21 22% 36%, transparent 36% 40%, #b84b21 40% 54%, transparent 54% 58%, #b84b21 58% 72%, transparent 72% 76%, #b84b21 76% 90%, transparent 90%),
-        linear-gradient(#f7ca2e 0 40%, #0c9b43 40% 70%, #f1d8b7 70%);
+        linear-gradient(90deg, transparent 0 5%, #b84a21 5% 18%, transparent 18% 22%, #b84a21 22% 35%, transparent 35% 40%, #b84a21 40% 54%, transparent 54% 58%, #b84a21 58% 72%, transparent 72% 76%, #b84a21 76% 90%, transparent 90%),
+        linear-gradient(#f8ca2f 0 40%, #0c9b43 40% 70%, #f0d8b8 70%);
     }
 
-    .content {
+    .home-content {
       padding: 0 22px 24px;
-      margin-top: -46px;
+      margin-top: -44px;
       position: relative;
       z-index: 3;
     }
 
+    .card,
     .account-card,
-    .feature-card,
-    .green-banner,
-    .coupon-card,
+    .banner-card,
     .product-card,
-    .plain-card {
+    .checkout-card,
+    .profile-card {
+      background: var(--card);
       border-radius: 24px;
-      background: #fff;
-      box-shadow: 0 10px 22px rgba(0,0,0,.045);
+      box-shadow: 0 10px 24px rgba(0,0,0,.05);
     }
 
-    .account-card {
-      padding: 20px 18px 18px;
-    }
+    .account-card { padding: 19px 18px 17px; }
 
     .account-head {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 24px;
-      font-weight: 900;
+      font-size: 23px;
+      font-weight: 1000;
     }
 
     .badge {
       padding: 3px 6px;
       border-radius: 4px;
-      background: #d6d6d6;
       color: #fff;
-      font-size: 13px;
-      font-weight: 800;
+      background: #d2d2d2;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .mode-switch {
+      margin-top: 15px;
+      padding: 5px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      border-radius: 999px;
+      background: #f0f0f0;
+    }
+
+    .mode {
+      height: 40px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mode.active {
+      color: #fff;
+      background: var(--green);
     }
 
     .account-stats {
-      margin-top: 18px;
+      margin-top: 15px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       text-align: center;
     }
 
     .stat {
-      border-right: 1px solid #eee;
       color: #777;
-      font-size: 16px;
+      border-right: 1px solid #eee;
+      font-size: 15px;
     }
 
-    .stat:last-child {
-      border-right: 0;
+    .stat:last-child { border-right: 0; }
+    .stat b { margin-left: 6px; color: #111; font-size: 23px; }
+
+    .hours {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      color: #686868;
+      font-size: 14px;
     }
 
-    .stat b {
-      margin-left: 8px;
-      color: #111;
-      font-size: 24px;
+    .open-status {
+      color: var(--green);
+      font-weight: 900;
     }
 
-    .feature-card {
-      margin-top: 22px;
-      padding: 22px 0 0;
+    .banner-card {
+      margin-top: 20px;
+      padding: 21px 18px 0;
       overflow: hidden;
-      border: 1px solid rgba(111, 50, 168, .28);
+      border: 1px solid rgba(111, 49, 166, .26);
     }
 
-    .feature-grid {
+    .banner-copy {
       display: grid;
       grid-template-columns: 1fr 1fr;
       text-align: center;
     }
 
-    .feature-title {
+    .banner-copy h2 {
+      margin: 0;
       font-size: 25px;
       font-weight: 1000;
     }
 
-    .feature-sub {
-      margin-top: 8px;
+    .banner-copy p {
+      margin: 7px 0 0;
       color: #777;
-      font-size: 16px;
+      font-size: 15px;
     }
 
-    .feature-visual {
-      height: 86px;
-      margin-top: 12px;
-      background: linear-gradient(90deg, #8748bd, #914fc5);
-      position: relative;
+    .banner-strip {
+      height: 88px;
+      margin-top: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
+      background: linear-gradient(90deg, #8548bc, #914fc5);
       font-size: 21px;
       font-weight: 1000;
     }
 
-    .mini-figure {
-      width: 58px;
-      height: 58px;
-      border-radius: 18px;
-      display: grid;
-      place-items: center;
-      background: #f8f8f8;
-      color: #111;
-      font-size: 31px;
-      box-shadow: 0 10px 18px rgba(0,0,0,.12);
-    }
-
-    .visual-word {
+    .banner-strip span {
       margin: 0 10px;
       padding: 4px 10px;
+      background: #6d31a6;
       transform: rotate(-4deg);
-      color: #fff;
-      background: #6f32a8;
       text-shadow: 0 2px 0 rgba(0,0,0,.16);
     }
 
+    .search {
+      margin-top: 18px;
+      padding: 15px 18px;
+      border-radius: 999px;
+      color: #777;
+      background: #fff;
+      box-shadow: 0 10px 22px rgba(0,0,0,.045);
+      cursor: pointer;
+    }
+
     .shortcut-row {
+      margin-top: 20px;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      margin: 24px 0 18px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
       text-align: center;
     }
 
     .shortcut {
+      min-height: 88px;
+      padding: 10px 4px;
+      border-radius: 18px;
+      background: #fff;
+      cursor: pointer;
       position: relative;
-      min-width: 0;
     }
 
-    .shortcut-icon {
-      width: 44px;
-      height: 44px;
-      margin: 0 auto 7px;
-      display: grid;
-      place-items: center;
-      font-size: 25px;
-    }
-
-    .shortcut-label {
-      font-size: 15px;
-      white-space: nowrap;
-    }
-
-    .corner-tag {
-      position: absolute;
-      top: -8px;
-      right: 2px;
-      padding: 2px 5px;
-      border-radius: 8px 8px 8px 0;
-      background: var(--orange);
-      color: #fff;
-      font-size: 10px;
-      font-weight: 800;
-    }
+    .shortcut-icon { font-size: 32px; line-height: 40px; }
+    .shortcut-name { margin-top: 5px; font-size: 14px; font-weight: 900; }
 
     .green-banner {
-      min-height: 126px;
+      margin-top: 20px;
+      min-height: 124px;
       padding: 18px;
+      border-radius: 22px;
       color: #fff;
-      overflow: hidden;
+      background: linear-gradient(120deg, #06933c, #18ad50);
       position: relative;
-      background: linear-gradient(120deg, #07943c, #1caf4f);
+      overflow: hidden;
     }
 
-    .banner-tabs {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      font-size: 17px;
-      font-weight: 900;
-    }
-
-    .banner-tabs span:first-child {
-      padding: 4px 14px;
-      border-radius: 999px;
-      background: #fff;
-      color: var(--green);
-    }
-
-    .banner-main {
-      margin-top: 16px;
-      font-size: 30px;
+    .green-banner h2 {
+      margin: 12px 0 0;
+      font-size: 29px;
       line-height: 1.05;
       font-weight: 1000;
       text-shadow: 0 3px 0 rgba(0,0,0,.12);
     }
 
-    .price-bubble {
-      position: absolute;
-      right: 132px;
-      bottom: 18px;
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: #fff;
+    .green-pill {
+      display: inline-block;
+      padding: 4px 13px;
+      border-radius: 999px;
       color: var(--green);
-      font-size: 19px;
+      background: #fff;
       font-weight: 1000;
-      line-height: 1.05;
     }
 
-    .card-art {
+    .green-banner:after {
+      content: "🥪";
       position: absolute;
-      right: 18px;
-      top: 28px;
-      width: 112px;
-      height: 76px;
-      border-radius: 15px;
-      border: 3px solid rgba(255,255,255,.18);
-      display: grid;
-      place-items: center;
-      background: #08793b;
-      color: #ffd85d;
-      font-size: 24px;
-      font-weight: 1000;
+      right: 24px;
+      bottom: 15px;
+      font-size: 58px;
+      filter: drop-shadow(0 10px 10px rgba(0,0,0,.15));
     }
 
     .section-head {
-      margin: 28px 0 14px;
+      margin: 26px 0 13px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -440,106 +413,10 @@
 
     .section-head span {
       color: #777;
-      font-size: 16px;
-    }
-
-    .coupon-scroller {
-      display: grid;
-      gap: 14px;
-      grid-auto-flow: column;
-      grid-auto-columns: 86%;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scrollbar-width: none;
-    }
-
-    .coupon-scroller::-webkit-scrollbar {
-      display: none;
-    }
-
-    .coupon-card {
-      min-height: 118px;
-      padding: 16px;
-      display: grid;
-      grid-template-columns: 86px 1fr 90px;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .coupon-food {
-      font-size: 54px;
-    }
-
-    .coupon-title {
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .coupon-price {
-      margin-top: 8px;
-      color: #ef4e2f;
-      font-size: 27px;
-      font-weight: 1000;
-    }
-
-    .coupon-price small {
-      color: #aaa;
-      font-size: 14px;
-      text-decoration: line-through;
-      font-weight: 500;
-    }
-
-    .use-btn,
-    .primary-btn {
-      border: 0;
-      border-radius: 999px;
-      background: var(--green);
-      color: #fff;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .use-btn {
-      height: 42px;
-      font-size: 17px;
-    }
-
-    .menu-header {
-      padding: 26px 22px 18px;
-      color: #fff;
-      background: linear-gradient(135deg, #692ea2, #251032);
-      border-radius: 0 0 28px 28px;
-    }
-
-    .menu-header h1 {
-      margin: 0;
-      font-size: 28px;
-    }
-
-    .menu-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 18px;
-    }
-
-    .tab {
-      height: 42px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: rgba(255,255,255,.16);
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .tab.active {
-      background: #fff;
-      color: var(--green);
+      font-size: 15px;
     }
 
     .product-list {
-      padding: 18px 22px;
       display: grid;
       gap: 14px;
     }
@@ -552,25 +429,25 @@
       align-items: center;
     }
 
-    .product-img {
+    .food-img {
       width: 84px;
       height: 84px;
       border-radius: 20px;
       display: grid;
       place-items: center;
-      background: #f6f6f6;
-      font-size: 44px;
+      background: linear-gradient(135deg, #fbfbfb, #eaf8ef);
+      font-size: 43px;
     }
 
     .product-name {
       font-size: 18px;
-      font-weight: 900;
+      font-weight: 1000;
     }
 
     .tags {
+      margin-top: 7px;
       display: flex;
       gap: 5px;
-      margin-top: 8px;
       flex-wrap: wrap;
     }
 
@@ -580,10 +457,10 @@
       color: var(--green);
       background: #e8f7ed;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
-    .product-price {
+    .price {
       margin-top: 8px;
       color: #ef4e2f;
       font-size: 22px;
@@ -598,9 +475,51 @@
       color: #fff;
       background: var(--green);
       font-size: 24px;
-      font-weight: 900;
+      font-weight: 1000;
       cursor: pointer;
     }
+
+    .menu-head {
+      padding: 24px 22px 18px;
+      color: #fff;
+      border-radius: 0 0 28px 28px;
+      background: linear-gradient(135deg, #7032a9, #24112f);
+    }
+
+    .menu-head h1,
+    .plain-page h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .menu-head p {
+      margin: 8px 0 0;
+      color: rgba(255,255,255,.76);
+    }
+
+    .tabs {
+      margin-top: 17px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .tab {
+      height: 42px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.16);
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: var(--green);
+      background: #fff;
+    }
+
+    .menu-body { padding: 18px 22px 24px; }
 
     .cart-bar {
       position: fixed;
@@ -620,9 +539,7 @@
       box-shadow: 0 14px 28px rgba(0,0,0,.18);
     }
 
-    .cart-bar.active {
-      display: flex;
-    }
+    .cart-bar.active { display: flex; }
 
     .cart-icon {
       width: 44px;
@@ -634,12 +551,17 @@
       font-size: 24px;
     }
 
-    .cart-meta {
-      flex: 1;
-    }
+    .cart-meta { flex: 1; }
+    .cart-meta small { color: #bbb; }
 
-    .cart-meta small {
-      color: #bbb;
+    .primary-btn,
+    .use-btn {
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--green);
+      font-weight: 1000;
+      cursor: pointer;
     }
 
     .primary-btn {
@@ -652,28 +574,43 @@
       padding: 24px 22px;
     }
 
-    .plain-page h1 {
-      margin: 0 0 18px;
-      font-size: 28px;
-    }
-
-    .plain-card {
+    .checkout-card,
+    .profile-card {
       padding: 18px;
-      margin-bottom: 14px;
+      margin-top: 14px;
     }
 
-    .order-line {
+    .checkout-card h2,
+    .profile-card h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .mode-row {
       display: grid;
-      grid-template-columns: 58px 1fr auto;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .mode-row .mode {
+      background: #f0f0f0;
+    }
+
+    .mode-row .mode.active {
+      background: var(--green);
+    }
+
+    .line {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
       gap: 12px;
       align-items: center;
       padding: 10px 0;
       border-bottom: 1px solid var(--line);
     }
 
-    .order-line:last-child {
-      border-bottom: 0;
-    }
+    .line:last-child { border-bottom: 0; }
 
     .mini-food {
       width: 58px;
@@ -683,6 +620,77 @@
       place-items: center;
       background: #f4f4f4;
       font-size: 30px;
+    }
+
+    .amount-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      color: #555;
+    }
+
+    .amount-row.pay {
+      margin-top: 8px;
+      color: #111;
+      font-size: 22px;
+      font-weight: 1000;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 76px;
+      padding: 13px;
+      border: 0;
+      border-radius: 18px;
+      outline: none;
+      resize: none;
+      background: #f4f4f4;
+    }
+
+    .pay-btn {
+      width: 100%;
+      margin-top: 14px;
+      min-height: 52px;
+      font-size: 18px;
+    }
+
+    .profile-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #e8f7ed;
+      font-size: 42px;
+    }
+
+    .profile-tabs {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+    }
+
+    .profile-tab {
+      height: 38px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #f1f1f1;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .profile-tab.active {
+      color: #fff;
+      background: var(--green);
     }
 
     .bottom-nav {
@@ -706,7 +714,7 @@
       gap: 3px;
       color: #999;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
     }
 
@@ -714,17 +722,11 @@
       font-size: 24px;
       line-height: 1;
       filter: grayscale(1);
-      opacity: .55;
+      opacity: .52;
     }
 
-    .nav.active {
-      color: #111;
-    }
-
-    .nav.active b {
-      filter: none;
-      opacity: 1;
-    }
+    .nav.active { color: #111; }
+    .nav.active b { filter: none; opacity: 1; }
 
     .modal {
       position: fixed;
@@ -735,28 +737,42 @@
       background: rgba(0,0,0,.42);
     }
 
-    .modal.active {
-      display: flex;
+    .modal.center {
+      align-items: center;
+      padding: 26px;
     }
 
-    .spec {
+    .modal.active { display: flex; }
+
+    .sheet,
+    .dialog {
       width: min(430px, 100vw);
       margin: 0 auto;
       padding: 22px;
-      border-radius: 28px 28px 0 0;
       background: #fff;
     }
 
-    .spec-visual {
-      height: 138px;
+    .sheet { border-radius: 28px 28px 0 0; }
+    .dialog { border-radius: 28px; text-align: center; }
+
+    .sheet-visual,
+    .dialog-visual {
+      height: 134px;
       border-radius: 24px;
       display: grid;
       place-items: center;
       background: linear-gradient(135deg, #f5f5f5, #e8f7ed);
-      font-size: 68px;
+      font-size: 66px;
     }
 
-    .spec h2 {
+    .dialog-visual {
+      width: 150px;
+      height: 120px;
+      margin: 0 auto 10px;
+    }
+
+    .sheet h2,
+    .dialog h2 {
       margin: 16px 0 8px;
       font-size: 24px;
     }
@@ -771,7 +787,7 @@
       padding: 9px 13px;
       border-radius: 999px;
       border: 1px solid #ddd;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
     }
 
@@ -781,18 +797,7 @@
       background: #e8f7ed;
     }
 
-    textarea {
-      width: 100%;
-      min-height: 74px;
-      padding: 13px;
-      border: 0;
-      border-radius: 18px;
-      outline: none;
-      resize: none;
-      background: #f5f5f5;
-    }
-
-    .spec-actions {
+    .sheet-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
@@ -804,194 +809,175 @@
       border-radius: 999px;
       color: #333;
       background: #eee;
-      font-weight: 900;
+      font-weight: 1000;
       cursor: pointer;
     }
 
-    @media (max-width: 360px) {
-      .campaign-title {
-        font-size: 36px;
-      }
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 42px 16px;
+    }
 
-      .coupon-card {
-        grid-template-columns: 70px 1fr 78px;
-      }
-
-      .shortcut-label {
-        font-size: 13px;
-      }
+    .empty div:first-child {
+      font-size: 70px;
+      margin-bottom: 8px;
     }
   </style>
 </head>
 <body>
   <main class="phone">
     <section id="home" class="page active">
-      <div class="hero">
-        <div class="statusbar">
-          <span>13:56</span>
-          <span class="status-icons">▮▮▮ WiFi 🔋</span>
-        </div>
+      <div class="top-hero">
+        <div class="statusbar"><span>13:56</span><span class="status-icons">▮▮▮ WiFi 🔋</span></div>
         <div class="hero-actions">
-          <div class="location">📍 小时代...</div>
-          <div class="checkin"><span class="checkin-icon">☑</span><span>签到<br>赚积分</span></div>
-          <div class="more-pill"><span>•••</span><span></span><span>◎</span></div>
+          <div class="location-pill">📍 小时代...</div>
+          <div class="mini-action"><b>☑</b><span>营业中<br>08:00-20:00</span></div>
+          <div class="more-pill"><span>•••</span><i></i><span>◎</span></div>
         </div>
-        <div class="campaign-title">潜水而生</div>
-        <div class="campaign-sub">鲜切三明治季 · 特厚牛肉系列</div>
-        <div class="sandwich-hero">
-          <div class="bread"></div>
-          <div class="filling"></div>
-        </div>
+        <div class="brand-title">极简三明治</div>
+        <div class="brand-sub">工作再忙，也要好好吃一餐</div>
+        <div class="sandwich-visual"><div class="bread"></div><div class="filling"></div></div>
       </div>
 
-      <div class="content">
+      <div class="home-content">
         <div class="account-card">
-          <div class="account-head">潜水的三明治 <span class="badge">暂无权益卡</span> <span style="font-size:16px;">开通 ›</span></div>
+          <div class="account-head">极简三明治 <span class="badge">新人专享</span> <span style="font-size:16px;">领券 ›</span></div>
+          <div class="mode-switch">
+            <div class="mode active" data-delivery="delivery">外卖</div>
+            <div class="mode" data-delivery="pickup">自提</div>
+          </div>
           <div class="account-stats">
             <div class="stat">钱包余额:<b>0</b></div>
             <div class="stat">积分:<b>0</b></div>
             <div class="stat">优惠券:<b>6</b></div>
           </div>
+          <div class="hours"><span>今日营业 08:00 - 20:00</span><span class="open-status">营业中</span></div>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-grid">
-            <div>
-              <div class="feature-title">预约点单</div>
-              <div class="feature-sub">新上线！预约明日早餐</div>
-            </div>
-            <div>
-              <div class="feature-title">到店自取</div>
-              <div class="feature-sub">一口新鲜，唤醒百味</div>
-            </div>
+        <div class="banner-card">
+          <div class="banner-copy">
+            <div><h2>预约点单</h2><p>预定明日早餐</p></div>
+            <div><h2>到店自取</h2><p>一口新鲜，快速取餐</p></div>
           </div>
-          <div class="feature-visual">
-            <div class="mini-figure">🕘</div>
-            <div class="visual-word">你的活力正在备餐</div>
-            <div class="mini-figure">🏪</div>
-          </div>
+          <div class="banner-strip">今日预定减3元 <span>满39免配送</span></div>
         </div>
+
+        <div class="search" data-nav="menu">今天想吃点什么？</div>
 
         <div class="shortcut-row">
-          <div class="shortcut"><div class="shortcut-icon">🏆</div><div class="shortcut-label">积分奖励</div></div>
-          <div class="shortcut"><span class="corner-tag">送周边</span><div class="shortcut-icon">🎁</div><div class="shortcut-label">充值/礼品卡</div></div>
-          <div class="shortcut"><span class="corner-tag">领百元券包</span><div class="shortcut-icon">🎟️</div><div class="shortcut-label">会员领券</div></div>
-          <div class="shortcut"><span class="corner-tag">半价三明治</span><div class="shortcut-icon">🤝</div><div class="shortcut-label">邀新有礼</div></div>
-          <div class="shortcut"><span class="corner-tag">免费小食</span><div class="shortcut-icon">💬</div><div class="shortcut-label">入群领券</div></div>
+          <div class="shortcut" data-category-jump="sandwich"><div class="shortcut-icon">🍞</div><div class="shortcut-name">全麦</div></div>
+          <div class="shortcut" data-category-jump="sandwich"><div class="shortcut-icon">🥚</div><div class="shortcut-name">厚切</div></div>
+          <div class="shortcut" data-category-jump="set"><div class="shortcut-icon">🥪</div><div class="shortcut-name">套餐</div></div>
+          <div class="shortcut" data-category-jump="drink"><div class="shortcut-icon">🥤</div><div class="shortcut-name">饮品</div></div>
         </div>
 
         <div class="green-banner">
-          <div class="banner-tabs"><span>百味卡</span><span>早餐卡</span></div>
-          <div class="banner-main">开卡即享 <span style="background:#ff5b2e;border-radius:6px;padding:0 5px;">免费升舱</span><br>最快一单回本</div>
-          <div class="price-bubble">19.9元<br>30天</div>
-          <div class="card-art">百味卡</div>
+          <span class="green-pill">新人券</span>
+          <h2>3元无门槛<br>下单立享</h2>
         </div>
 
-        <div class="section-head">
-          <h2>我的优惠券</h2>
-          <span>6张可用 ›</span>
-        </div>
-        <div class="coupon-scroller">
-          <div class="coupon-card">
-            <div class="coupon-food">🥪</div>
-            <div>
-              <div class="coupon-title">半价肉肉满足双人餐</div>
-              <div class="coupon-price">¥57 <small>¥114.5</small></div>
-            </div>
-            <button class="use-btn" data-nav="menu">去使用</button>
-          </div>
-          <div class="coupon-card">
-            <div class="coupon-food">🥤</div>
-            <div>
-              <div class="coupon-title">三明治加饮品套餐券</div>
-              <div class="coupon-price">¥29 <small>¥42</small></div>
-            </div>
-            <button class="use-btn" data-nav="menu">去使用</button>
-          </div>
-        </div>
+        <div class="section-head"><h2>推荐商品</h2><span data-nav="menu">更多 ›</span></div>
+        <div class="product-list" id="recommendList"></div>
       </div>
     </section>
 
     <section id="menu" class="page">
-      <div class="menu-header">
-        <h1>预约点单</h1>
-        <div style="margin-top:8px;color:rgba(255,255,255,.76);">只做三明治、套餐、饮品，下单更快</div>
-        <div class="menu-tabs">
+      <div class="menu-head">
+        <h1>商品页</h1>
+        <p>只保留三明治、套餐、饮品，点击商品选择规格</p>
+        <div class="tabs">
           <div class="tab active" data-category="sandwich">三明治</div>
           <div class="tab" data-category="set">套餐</div>
           <div class="tab" data-category="drink">饮品</div>
         </div>
       </div>
-      <div class="product-list" id="productList"></div>
+      <div class="menu-body"><div class="product-list" id="menuList"></div></div>
     </section>
 
-    <section id="orders" class="page plain-page">
-      <h1>订单</h1>
-      <div id="orderList"></div>
+    <section id="checkout" class="page plain-page">
+      <h1>结算页</h1>
+      <div id="checkoutContent"></div>
     </section>
 
     <section id="profile" class="page plain-page">
       <h1>我的</h1>
-      <div class="plain-card">
-        <div style="display:flex;align-items:center;gap:14px;">
-          <div class="mini-food" style="width:72px;height:72px;font-size:40px;border-radius:50%;background:#e8f7ed;">🥪</div>
-          <div>
-            <div style="font-size:22px;font-weight:1000;">潜水的三明治</div>
-            <div style="color:#777;margin-top:4px;">积分 0 · 优惠券 6 · 暂无权益卡</div>
-          </div>
+      <div class="profile-card">
+        <div class="profile-head">
+          <div class="avatar">🥪</div>
+          <div><div style="font-size:22px;font-weight:1000;">三明治用户</div><div style="color:#777;margin-top:4px;">积分可兑换单品，不做会员等级</div></div>
+        </div>
+        <div class="profile-tabs">
+          <div class="profile-tab active" data-profile="orders">我的订单</div>
+          <div class="profile-tab" data-profile="coupons">我的优惠券</div>
+          <div class="profile-tab" data-profile="points">我的积分</div>
         </div>
       </div>
-      <div class="plain-card">
-        <div style="font-size:20px;font-weight:1000;margin-bottom:12px;">我的权益</div>
-        <div class="order-line"><div class="mini-food">🎟️</div><div><b>我的优惠券</b><br><span style="color:#777;">6 张可用</span></div><b>›</b></div>
-        <div class="order-line"><div class="mini-food">🏆</div><div><b>我的积分</b><br><span style="color:#777;">可兑换单品</span></div><b>›</b></div>
-        <div class="order-line"><div class="mini-food">🎁</div><div><b>礼品卡</b><br><span style="color:#777;">演示入口</span></div><b>›</b></div>
-      </div>
+      <div id="profileContent"></div>
     </section>
 
     <div class="cart-bar" id="cartBar">
       <div class="cart-icon">🧺</div>
       <div class="cart-meta"><small id="cartCount">已选 0 件</small><div id="cartAmount" style="font-weight:1000;">合计 ¥0</div></div>
-      <button class="primary-btn" id="payBtn">去结算</button>
+      <button class="primary-btn" data-nav="checkout">去结算</button>
     </div>
   </main>
 
   <nav class="bottom-nav">
     <div class="nav active" data-nav="home"><b>🔰</b><span>首页</span></div>
-    <div class="nav" data-nav="menu"><b>🥪</b><span>点单</span></div>
-    <div class="nav" data-nav="orders"><b>🧾</b><span>订单</span></div>
+    <div class="nav" data-nav="menu"><b>🥪</b><span>商品</span></div>
+    <div class="nav" data-nav="checkout"><b>🧾</b><span>结算</span></div>
     <div class="nav" data-nav="profile"><b>👤</b><span>我的</span></div>
   </nav>
 
-  <div class="modal" id="specModal">
-    <div class="spec" id="specContent"></div>
+  <div class="modal" id="specModal"><div class="sheet" id="specContent"></div></div>
+  <div class="modal center active" id="couponModal">
+    <div class="dialog">
+      <div class="dialog-visual">🎟️</div>
+      <h2>新人专享</h2>
+      <p style="color:#777;">3元无门槛优惠券</p>
+      <button class="primary-btn" style="width:100%;min-height:50px;" id="claimCoupon">立即领取</button>
+    </div>
+  </div>
+  <div class="modal center" id="deliveryModal">
+    <div class="dialog">
+      <div class="dialog-visual">🛵</div>
+      <h2>订单配送中</h2>
+      <p style="color:#777;line-height:1.5;">您的订单正在配送中，请您耐心等待。预计 30 分钟送达。</p>
+      <button class="primary-btn" style="width:100%;min-height:50px;" id="closeDelivery">知道了</button>
+    </div>
   </div>
 
   <script>
     const products = [
-      { id: "p1", name: "灯影牛排三明治", category: "sandwich", price: 28, icon: "🥩", tags: ["新品", "厚切"] },
-      { id: "p2", name: "厚切鸡蛋三明治", category: "sandwich", price: 18, icon: "🥚", tags: ["热卖", "高蛋白"] },
-      { id: "p3", name: "全麦鸡胸三明治", category: "sandwich", price: 22, icon: "🍗", tags: ["低脂", "轻食"] },
-      { id: "p4", name: "早餐能量套餐", category: "set", price: 29, icon: "🥪", tags: ["套餐", "饮品搭配"] },
-      { id: "p5", name: "双人肉肉满足餐", category: "set", price: 57, icon: "🍟", tags: ["半价券", "双人"] },
-      { id: "p6", name: "冰美式", category: "drink", price: 12, icon: "☕", tags: ["冰饮", "清爽"] },
-      { id: "p7", name: "柠檬果茶", category: "drink", price: 15, icon: "🍋", tags: ["果茶", "冰爽"] }
+      { id: "p1", name: "厚切鸡蛋三明治", category: "sandwich", price: 18, icon: "🥚", tags: ["热卖", "高蛋白"], egg: true, cheese: true },
+      { id: "p2", name: "全麦鸡胸三明治", category: "sandwich", price: 22, icon: "🍗", tags: ["低脂", "轻食"], egg: true, cheese: false },
+      { id: "p3", name: "芝士火腿三明治", category: "sandwich", price: 20, icon: "🧀", tags: ["芝士", "香浓"], egg: true, cheese: true },
+      { id: "p4", name: "早餐能量套餐", category: "set", price: 29, icon: "🥪", tags: ["套餐", "饮品搭配"], egg: true, cheese: true },
+      { id: "p5", name: "午间轻食套餐", category: "set", price: 35, icon: "🥗", tags: ["沙拉", "果茶"], egg: false, cheese: true },
+      { id: "p6", name: "冰美式", category: "drink", price: 12, icon: "☕", tags: ["冰饮", "清爽"], egg: false, cheese: false },
+      { id: "p7", name: "柠檬果茶", category: "drink", price: 15, icon: "🍋", tags: ["果茶", "冰爽"], egg: false, cheese: false }
     ];
 
     const state = {
       page: "home",
+      deliveryType: "delivery",
       category: "sandwich",
+      profileTab: "orders",
+      couponClaimed: false,
       cart: [],
       orders: []
     };
 
-    function money(value) {
-      return Number(value).toFixed(0);
-    }
-
-    function cartTotal() {
-      return state.cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    }
+    const money = value => Number(value).toFixed(0);
+    const itemTotal = item => (item.price + item.addOns.reduce((sum, add) => sum + add.price, 0)) * item.qty;
+    const cartTotal = () => state.cart.reduce((sum, item) => sum + itemTotal(item), 0);
+    const checkoutAmount = () => {
+      const goods = cartTotal();
+      const deliveryFee = state.deliveryType === "delivery" && goods > 0 ? 3 : 0;
+      const discount = goods >= 39 ? 5 : state.couponClaimed && goods > 0 ? 3 : 0;
+      return { goods, deliveryFee, discount, pay: Math.max(goods + deliveryFee - discount, 0) };
+    };
 
     function setPage(page) {
       state.page = page;
@@ -1000,50 +986,41 @@
       render();
     }
 
+    function card(product) {
+      return `<div class="product-card">
+        <div class="food-img">${product.icon}</div>
+        <div><div class="product-name">${product.name}</div><div class="tags">${product.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div><div class="price">¥${product.price}</div></div>
+        <button class="plus-btn" data-product="${product.id}">+</button>
+      </div>`;
+    }
+
     function renderProducts() {
+      document.getElementById("recommendList").innerHTML = products.slice(0, 3).map(card).join("");
       document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.category === state.category));
-      document.getElementById("productList").innerHTML = products
-        .filter(item => item.category === state.category)
-        .map(item => `
-          <div class="product-card">
-            <div class="product-img">${item.icon}</div>
-            <div>
-              <div class="product-name">${item.name}</div>
-              <div class="tags">${item.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
-              <div class="product-price">¥${item.price}</div>
-            </div>
-            <button class="plus-btn" data-product="${item.id}">+</button>
-          </div>
-        `).join("");
+      document.getElementById("menuList").innerHTML = products.filter(p => p.category === state.category).map(card).join("");
     }
 
     function openSpec(id) {
-      const item = products.find(product => product.id === id);
-      document.getElementById("specContent").innerHTML = `
-        <div class="spec-visual">${item.icon}</div>
-        <h2>${item.name}</h2>
-        <div style="color:#ef4e2f;font-size:26px;font-weight:1000;">¥${item.price}</div>
+      const p = products.find(item => item.id === id);
+      document.getElementById("specContent").innerHTML = `<div class="sheet-visual">${p.icon}</div>
+        <h2>${p.name}</h2>
+        <div style="color:#ef4e2f;font-size:26px;font-weight:1000;">¥${p.price}</div>
         <div class="addon-row">
-          <div class="addon">加蛋 +3</div>
-          <div class="addon">芝士 +3</div>
+          ${p.egg ? `<div class="addon" data-addon="加蛋" data-price="3">加蛋 +3元</div>` : ""}
+          ${p.cheese ? `<div class="addon" data-addon="芝士" data-price="3">芝士 +3元</div>` : ""}
         </div>
         <textarea placeholder="备注：不要洋葱、少酱、加热"></textarea>
-        <div class="spec-actions">
-          <button class="ghost-btn" id="closeSpec">取消</button>
-          <button class="primary-btn" data-add="${item.id}">加入购物车</button>
-        </div>
-      `;
+        <div class="sheet-actions"><button class="ghost-btn" id="closeSpec">取消</button><button class="primary-btn" data-add="${p.id}">加入购物车</button></div>`;
       document.getElementById("specModal").classList.add("active");
     }
 
     function addCart(id) {
-      const item = products.find(product => product.id === id);
-      const exists = state.cart.find(row => row.id === id);
-      if (exists) {
-        exists.qty += 1;
-      } else {
-        state.cart.push({ ...item, qty: 1 });
-      }
+      const p = products.find(item => item.id === id);
+      const addOns = [...document.querySelectorAll(".addon.active")].map(el => ({ name: el.dataset.addon, price: Number(el.dataset.price) }));
+      const key = [id, addOns.map(a => a.name).join("|")].join("__");
+      const exists = state.cart.find(item => item.key === key);
+      if (exists) exists.qty += 1;
+      else state.cart.push({ ...p, key, qty: 1, addOns });
       document.getElementById("specModal").classList.remove("active");
       render();
     }
@@ -1055,48 +1032,64 @@
       document.getElementById("cartAmount").textContent = `合计 ¥${money(cartTotal())}`;
     }
 
-    function payOrder() {
-      if (!state.cart.length) return;
-      state.orders.unshift({
-        id: `S${Date.now().toString().slice(-6)}`,
-        items: state.cart.map(item => ({ ...item })),
-        total: cartTotal(),
-        status: "制作中"
-      });
-      state.cart = [];
-      setPage("orders");
-    }
-
-    function renderOrders() {
-      const list = document.getElementById("orderList");
-      if (!state.orders.length) {
-        list.innerHTML = `<div class="plain-card" style="text-align:center;padding:44px 18px;"><div style="font-size:70px;">🥪</div><div style="color:#777;margin-top:10px;">还没有订单，去点一份三明治吧。</div></div>`;
+    function renderCheckout() {
+      const wrap = document.getElementById("checkoutContent");
+      if (!state.cart.length) {
+        wrap.innerHTML = `<div class="checkout-card empty"><div>🥪</div><p>购物车空空的，去点一份三明治吧。</p></div>`;
         return;
       }
-      list.innerHTML = state.orders.map(order => `
-        <div class="plain-card">
-          <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-weight:1000;"><span>订单 ${order.id}</span><span>${order.status}</span></div>
-          ${order.items.map(item => `
-            <div class="order-line">
-              <div class="mini-food">${item.icon}</div>
-              <div><b>${item.name}</b><br><span style="color:#777;">x${item.qty}</span></div>
-              <b>¥${money(item.price * item.qty)}</b>
-            </div>
-          `).join("")}
-          <div style="text-align:right;font-size:20px;font-weight:1000;margin-top:12px;">实付 ¥${money(order.total)}</div>
-        </div>
-      `).join("");
+      const amount = checkoutAmount();
+      wrap.innerHTML = `<div class="checkout-card">
+        <h2>配送方式</h2>
+        <div class="mode-row"><div class="mode ${state.deliveryType === "delivery" ? "active" : ""}" data-delivery="delivery">外卖</div><div class="mode ${state.deliveryType === "pickup" ? "active" : ""}" data-delivery="pickup">自提</div></div>
+      </div>
+      <div class="checkout-card"><h2>${state.deliveryType === "delivery" ? "收货地址" : "自提门店"}</h2><b>${state.deliveryType === "delivery" ? "阳光中心 A 座 12 层" : "极简三明治·中心店"}</b><p style="color:#777;">${state.deliveryType === "delivery" ? "小明 13800000000" : "自提时间：立即自提"}</p></div>
+      <div class="checkout-card"><h2>商品确认</h2>${state.cart.map(item => `<div class="line"><div class="mini-food">${item.icon}</div><div><b>${item.name}</b><br><span style="color:#777;">x${item.qty} ${item.addOns.map(a => a.name).join(" / ")}</span></div><b>¥${money(itemTotal(item))}</b></div>`).join("")}</div>
+      <div class="checkout-card"><div class="amount-row"><span>优惠券</span><span>${amount.discount ? `已优惠 ${amount.discount} 元` : "暂无可用"}</span></div><div class="amount-row"><span>商品金额</span><span>¥${money(amount.goods)}</span></div><div class="amount-row"><span>配送费</span><span>¥${money(amount.deliveryFee)}</span></div><div class="amount-row"><span>优惠金额</span><span>-¥${money(amount.discount)}</span></div><div class="amount-row pay"><span>实付金额</span><span>¥${money(amount.pay)}</span></div></div>
+      <div class="checkout-card"><h2>备注</h2><textarea placeholder="少酱、加热、放前台"></textarea><button class="primary-btn pay-btn" id="payBtn">微信支付 ¥${money(amount.pay)}</button></div>`;
+    }
+
+    function pay() {
+      const amount = checkoutAmount();
+      state.orders.unshift({ id: `S${Date.now().toString().slice(-6)}`, status: state.deliveryType === "delivery" ? "配送中" : "待自提", items: state.cart.map(item => ({ ...item })), pay: amount.pay });
+      state.cart = [];
+      document.getElementById("deliveryModal").classList.add("active");
+      render();
+    }
+
+    function renderProfile() {
+      document.querySelectorAll(".profile-tab").forEach(tab => tab.classList.toggle("active", tab.dataset.profile === state.profileTab));
+      const wrap = document.getElementById("profileContent");
+      if (state.profileTab === "orders") {
+        wrap.innerHTML = state.orders.length ? state.orders.map(order => `<div class="profile-card"><div style="display:flex;justify-content:space-between;font-weight:1000;"><span>订单 ${order.id}</span><span>${order.status}</span></div>${order.items.map(item => `<div class="line"><div class="mini-food">${item.icon}</div><div><b>${item.name}</b><br><span style="color:#777;">x${item.qty}</span></div><b>¥${money(itemTotal(item))}</b></div>`).join("")}<div class="amount-row pay"><span></span><span>实付 ¥${money(order.pay)}</span></div></div>`).join("") : `<div class="profile-card empty"><div>🥪</div><p>还没有订单，去点一份三明治吧。</p></div>`;
+      }
+      if (state.profileTab === "coupons") wrap.innerHTML = `<div class="profile-card"><h2>我的优惠券</h2><div class="line"><div class="mini-food">🎟️</div><div><b>3元无门槛优惠券</b><br><span style="color:#777;">${state.couponClaimed ? "未使用" : "首页可领取"}</span></div><b>›</b></div><div class="line"><div class="mini-food">🎟️</div><div><b>满39减5</b><br><span style="color:#777;">默认最优使用</span></div><b>›</b></div></div>`;
+      if (state.profileTab === "points") wrap.innerHTML = `<div class="profile-card"><h2>我的积分</h2><div style="font-size:54px;font-weight:1000;">0</div><p style="color:#777;">积分只用于兑换单品，不做会员等级、储值、月卡。</p></div>`;
     }
 
     function render() {
       renderProducts();
       renderCart();
-      renderOrders();
+      renderCheckout();
+      renderProfile();
     }
 
     document.addEventListener("click", event => {
       const nav = event.target.closest("[data-nav]");
       if (nav) setPage(nav.dataset.nav);
+
+      const delivery = event.target.closest("[data-delivery]");
+      if (delivery) {
+        state.deliveryType = delivery.dataset.delivery;
+        document.querySelectorAll("[data-delivery]").forEach(el => el.classList.toggle("active", el.dataset.delivery === state.deliveryType));
+        render();
+      }
+
+      const jump = event.target.closest("[data-category-jump]");
+      if (jump) {
+        state.category = jump.dataset.categoryJump;
+        setPage("menu");
+      }
 
       const category = event.target.closest("[data-category]");
       if (category) {
@@ -1113,11 +1106,13 @@
       const add = event.target.closest("[data-add]");
       if (add) addCart(add.dataset.add);
 
-      if (event.target.id === "closeSpec" || event.target.id === "specModal") {
-        document.getElementById("specModal").classList.remove("active");
-      }
+      if (event.target.id === "closeSpec" || event.target.id === "specModal") document.getElementById("specModal").classList.remove("active");
+      if (event.target.id === "claimCoupon") { state.couponClaimed = true; document.getElementById("couponModal").classList.remove("active"); render(); }
+      if (event.target.id === "payBtn") pay();
+      if (event.target.id === "closeDelivery") { document.getElementById("deliveryModal").classList.remove("active"); setPage("profile"); }
 
-      if (event.target.id === "payBtn") payOrder();
+      const profile = event.target.closest("[data-profile]");
+      if (profile) { state.profileTab = profile.dataset.profile; render(); }
     });
 
     render();
