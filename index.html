@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>极简三明治小程序演示版</title>
+  <style>
+    :root {
+      --yellow: #ffd33d;
+      --green: #b9ff00;
+      --text: #222;
+      --muted: #999;
+      --card: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      background-color: #fff4b8;
+      background-image:
+        linear-gradient(rgba(255, 211, 61, .26) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 211, 61, .26) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .phone {
+      width: min(430px, 100vw);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 14px 92px;
+      position: relative;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .topbar,
+    .row,
+    .amount-row,
+    .order-head {
+      display: flex;
+      align-items: center;
+    }
+
+    .topbar {
+      gap: 10px;
+    }
+
+    .logo,
+    .avatar,
+    .product-img,
+    .thumb,
+    .ip-hero,
+    .empty-img {
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 35% 25%, #fff, #efffc5 48%, var(--green));
+      box-shadow: inset 0 -10px 24px rgba(87, 117, 0, .08);
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 22px;
+    }
+
+    .brand {
+      flex: 1;
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .status {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .switch,
+    .tabs,
+    .profile-tabs {
+      display: grid;
+      gap: 6px;
+      margin-top: 16px;
+      padding: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .72);
+    }
+
+    .switch {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .tabs,
+    .profile-tabs {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .pill {
+      height: 42px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .pill.active {
+      background: var(--green);
+    }
+
+    .hours {
+      margin: 11px 0 14px;
+      color: #6a5a00;
+      font-size: 14px;
+    }
+
+    .banner {
+      min-height: 176px;
+      border-radius: 28px;
+      padding: 22px 18px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--green), #efffc5);
+      box-shadow: 0 14px 28px rgba(87, 117, 0, .14);
+    }
+
+    .banner-title {
+      width: 58%;
+      font-size: 27px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .banner-sub {
+      width: 58%;
+      margin-top: 12px;
+      color: #4e5f00;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .ip-hero {
+      width: 150px;
+      height: 150px;
+      border-radius: 48px;
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      font-size: 78px;
+    }
+
+    .search {
+      margin-top: 14px;
+      padding: 15px 18px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: var(--card);
+      box-shadow: 0 10px 22px rgba(87, 74, 0, .08);
+      cursor: pointer;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .category {
+      min-height: 94px;
+      padding: 11px 4px;
+      border-radius: 24px;
+      background: var(--card);
+      text-align: center;
+      box-shadow: 0 10px 22px rgba(87, 74, 0, .08);
+      cursor: pointer;
+    }
+
+    .category .icon {
+      font-size: 34px;
+      line-height: 44px;
+    }
+
+    .category .name {
+      margin-top: 5px;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .section-title {
+      margin: 20px 2px 12px;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .product-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .product {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: 0 12px 28px rgba(87, 74, 0, .08);
+      cursor: pointer;
+    }
+
+    .product-img {
+      flex: 0 0 104px;
+      height: 92px;
+      border-radius: 20px;
+      font-size: 42px;
+    }
+
+    .product-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-name {
+      font-weight: 900;
+      font-size: 17px;
+    }
+
+    .tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(185, 255, 0, .34);
+      color: #5b6f00;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .product-footer {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--green);
+      color: var(--text);
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .card {
+      margin-top: 12px;
+      padding: 18px;
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: 0 12px 28px rgba(87, 74, 0, .08);
+    }
+
+    .card-title {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .strong {
+      font-weight: 900;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .time-row,
+    .add-ons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .time-pill,
+    .add-on,
+    .status-chip {
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: #f6f6f6;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .time-pill.active,
+    .add-on.active {
+      background: var(--green);
+    }
+
+    .checkout-item,
+    .order-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .thumb {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      font-size: 26px;
+    }
+
+    .fill {
+      flex: 1;
+    }
+
+    .amount-row {
+      justify-content: space-between;
+      padding: 7px 0;
+    }
+
+    .amount-row.pay {
+      margin-top: 6px;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      margin-top: 12px;
+      padding: 14px;
+      border: 0;
+      border-radius: 20px;
+      resize: none;
+      background: #fff;
+      outline: none;
+    }
+
+    .primary-btn {
+      width: 100%;
+      min-height: 50px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--green);
+      color: var(--text);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(87, 117, 0, .16);
+    }
+
+    .pay-btn {
+      position: sticky;
+      bottom: 82px;
+      margin-top: 12px;
+    }
+
+    .cart-bar {
+      position: fixed;
+      left: 50%;
+      bottom: 78px;
+      transform: translateX(-50%);
+      z-index: 10;
+      width: min(402px, calc(100vw - 28px));
+      min-height: 64px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #222;
+      color: #fff;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .18);
+    }
+
+    .cart-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--green);
+      font-size: 24px;
+    }
+
+    .cart-meta {
+      flex: 1;
+    }
+
+    .cart-meta small {
+      color: #ccc;
+    }
+
+    .cart-bar .primary-btn {
+      width: auto;
+      min-height: 44px;
+      padding: 0 18px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: min(430px, 100vw);
+      height: 68px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #fff;
+      box-shadow: 0 -10px 30px rgba(87, 74, 0, .08);
+      z-index: 12;
+    }
+
+    .nav-item {
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: var(--text);
+    }
+
+    .mask {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(34, 34, 34, .38);
+    }
+
+    .mask.active {
+      display: flex;
+    }
+
+    .popup {
+      width: min(380px, 100%);
+      padding: 24px 20px 20px;
+      border-radius: 28px;
+      background: #fff;
+      text-align: center;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 50%;
+      background: #f6f6f6;
+      color: var(--muted);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .popup-img {
+      width: 150px;
+      height: 120px;
+      margin: 0 auto 10px;
+      border-radius: 40px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, #fff, var(--green));
+      font-size: 64px;
+    }
+
+    .popup-title {
+      font-size: 25px;
+      font-weight: 900;
+    }
+
+    .popup-text {
+      margin: 8px 0 18px;
+      color: #666;
+    }
+
+    .profile-head {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 18px;
+      border-radius: 28px;
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(87, 74, 0, .08);
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      font-size: 38px;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .order-card {
+      margin-top: 12px;
+      padding: 16px;
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 12px 28px rgba(87, 74, 0, .08);
+    }
+
+    .order-head {
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-weight: 900;
+    }
+
+    .empty {
+      margin-top: 16px;
+      padding: 36px 20px;
+      border-radius: 24px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .empty-img {
+      width: 170px;
+      height: 140px;
+      margin: 0 auto 12px;
+      border-radius: 42px;
+      font-size: 70px;
+    }
+  </style>
+</head>
+<body>
+  <main class="phone">
+    <section id="home" class="view active">
+      <div class="topbar">
+        <div class="logo">🥪</div>
+        <div class="brand">极简三明治</div>
+        <div class="status">营业中</div>
+      </div>
+
+      <div class="switch">
+        <div class="pill active" data-delivery="delivery">外卖</div>
+        <div class="pill" data-delivery="pickup">自提</div>
+      </div>
+      <div class="hours">今日营业 08:00 - 20:00</div>
+
+      <div class="banner">
+        <div class="banner-title">工作再忙，也要好好吃一餐</div>
+        <div class="banner-sub">今日预定减3元｜满39元免配送</div>
+        <div class="ip-hero">🥪</div>
+      </div>
+
+      <div class="search" data-nav="menu">今天想吃点什么？</div>
+
+      <div class="category-grid">
+        <div class="category" data-category="sandwich"><div class="icon">🍞</div><div class="name">全麦</div></div>
+        <div class="category" data-category="sandwich"><div class="icon">🥚</div><div class="name">厚切</div></div>
+        <div class="category" data-category="set"><div class="icon">🥪</div><div class="name">套餐</div></div>
+        <div class="category" data-category="drink"><div class="icon">🥤</div><div class="name">饮品</div></div>
+      </div>
+
+      <div class="section-title">推荐商品</div>
+      <div class="product-list" id="recommendList"></div>
+    </section>
+
+    <section id="menu" class="view">
+      <div class="tabs">
+        <div class="pill active" data-tab="sandwich">三明治</div>
+        <div class="pill" data-tab="set">套餐</div>
+        <div class="pill" data-tab="drink">饮品</div>
+      </div>
+      <div class="product-list" id="menuList"></div>
+    </section>
+
+    <section id="checkout" class="view">
+      <div id="checkoutContent"></div>
+    </section>
+
+    <section id="profile" class="view">
+      <div class="profile-head">
+        <div class="avatar">🥪</div>
+        <div>
+          <div class="brand">三明治用户</div>
+          <div class="muted">积分可兑换单品，不做等级和储值</div>
+        </div>
+      </div>
+
+      <div class="profile-tabs">
+        <div class="pill active" data-profile="orders">我的订单</div>
+        <div class="pill" data-profile="coupons">我的优惠券</div>
+        <div class="pill" data-profile="points">我的积分</div>
+      </div>
+
+      <div id="profileContent"></div>
+    </section>
+
+    <div class="cart-bar" id="cartBar" style="display:none;">
+      <div class="cart-icon">🧺</div>
+      <div class="cart-meta">
+        <small id="cartCount">已选 0 件</small>
+        <div class="strong" id="cartAmount">合计 ¥0</div>
+      </div>
+      <button class="primary-btn" data-nav="checkout">去结算</button>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-item active" data-nav="home">首页</div>
+    <div class="nav-item" data-nav="menu">点单</div>
+    <div class="nav-item" data-nav="profile">我的</div>
+  </nav>
+
+  <div class="mask active" id="couponPopup">
+    <div class="popup">
+      <button class="close" data-close="couponPopup">×</button>
+      <div class="popup-img">🎟️</div>
+      <div class="popup-title">新人专享</div>
+      <div class="popup-text">3元无门槛优惠券</div>
+      <button class="primary-btn" id="claimCoupon">立即领取</button>
+    </div>
+  </div>
+
+  <div class="mask" id="specPopup">
+    <div class="popup" id="specContent"></div>
+  </div>
+
+  <div class="mask" id="deliveryPopup">
+    <div class="popup">
+      <div class="popup-img">🛵</div>
+      <div class="popup-title">订单配送中</div>
+      <div class="popup-text">您的订单正在配送中，请您耐心等待。预计 30 分钟送达。</div>
+      <button class="primary-btn" data-close="deliveryPopup" data-nav="profile">知道了</button>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: "p001", name: "厚切鸡蛋三明治", category: "sandwich", price: 18, icon: "🥚", tags: ["热卖", "高蛋白"], canAddEgg: true, canAddCheese: true },
+      { id: "p002", name: "全麦鸡胸三明治", category: "sandwich", price: 22, icon: "🍗", tags: ["低脂", "轻食"], canAddEgg: true, canAddCheese: false },
+      { id: "p003", name: "芝士火腿三明治", category: "sandwich", price: 20, icon: "🧀", tags: ["芝士", "香浓"], canAddEgg: true, canAddCheese: true },
+      { id: "p004", name: "早餐能量套餐", category: "set", price: 29, icon: "🥪", tags: ["套餐", "饮品搭配"], canAddEgg: true, canAddCheese: true },
+      { id: "p005", name: "午间轻食套餐", category: "set", price: 35, icon: "🥗", tags: ["沙拉", "果茶"], canAddEgg: false, canAddCheese: true },
+      { id: "p006", name: "冰美式", category: "drink", price: 12, icon: "☕", tags: ["冰饮", "清爽"], canAddEgg: false, canAddCheese: false },
+      { id: "p007", name: "柠檬果茶", category: "drink", price: 15, icon: "🍋", tags: ["果茶", "冰爽"], canAddEgg: false, canAddCheese: false },
+      { id: "p008", name: "牛乳拿铁", category: "drink", price: 16, icon: "🥛", tags: ["拿铁", "顺滑"], canAddEgg: false, canAddCheese: false }
+    ];
+
+    const state = {
+      page: "home",
+      deliveryType: "delivery",
+      activeCategory: "sandwich",
+      profileTab: "orders",
+      coupons: [],
+      cart: [],
+      orders: []
+    };
+
+    function money(value) {
+      return Number(value).toFixed(0);
+    }
+
+    function itemTotal(item) {
+      const addOnPrice = item.addOns.reduce((sum, addOn) => sum + addOn.price, 0);
+      return (item.price + addOnPrice) * item.quantity;
+    }
+
+    function cartTotal() {
+      return state.cart.reduce((sum, item) => sum + itemTotal(item), 0);
+    }
+
+    function checkoutTotal() {
+      const goods = cartTotal();
+      const deliveryFee = state.deliveryType === "delivery" && goods > 0 ? 3 : 0;
+      const discount = goods >= 39 ? 5 : state.coupons.length ? 3 : 0;
+      return { goods, deliveryFee, discount, pay: Math.max(goods + deliveryFee - discount, 0) };
+    }
+
+    function showPage(page) {
+      state.page = page;
+      document.querySelectorAll(".view").forEach(view => view.classList.toggle("active", view.id === page));
+      document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active", item.dataset.nav === page));
+      render();
+    }
+
+    function productCard(product) {
+      return `
+        <div class="product" data-product="${product.id}">
+          <div class="product-img">${product.icon}</div>
+          <div class="product-body">
+            <div class="product-name">${product.name}</div>
+            <div class="tags">${product.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
+            <div class="product-footer">
+              <div class="price">¥${product.price}</div>
+              <button class="icon-btn" data-product="${product.id}">+</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProducts() {
+      document.getElementById("recommendList").innerHTML = products.slice(0, 3).map(productCard).join("");
+      document.getElementById("menuList").innerHTML = products
+        .filter(product => product.category === state.activeCategory)
+        .map(productCard)
+        .join("");
+      document.querySelectorAll("[data-tab]").forEach(tab => tab.classList.toggle("active", tab.dataset.tab === state.activeCategory));
+    }
+
+    function openSpec(productId) {
+      const product = products.find(item => item.id === productId);
+      const popup = document.getElementById("specPopup");
+      document.getElementById("specContent").innerHTML = `
+        <button class="close" data-close="specPopup">×</button>
+        <div class="popup-img">${product.icon}</div>
+        <div class="popup-title">${product.name}</div>
+        <div class="popup-text">¥${product.price}</div>
+        <div class="card-title" style="text-align:left;">加料选项</div>
+        <div class="add-ons" style="margin-bottom:14px;">
+          ${product.canAddEgg ? `<div class="add-on" data-addon="egg">加蛋 +3元</div>` : ""}
+          ${product.canAddCheese ? `<div class="add-on" data-addon="cheese">芝士 +3元</div>` : ""}
+        </div>
+        <textarea id="remark" placeholder="备注：不要洋葱、少酱、加热"></textarea>
+        <button class="primary-btn" data-add-cart="${product.id}">加入购物车</button>
+      `;
+      popup.classList.add("active");
+    }
+
+    function addCart(productId) {
+      const product = products.find(item => item.id === productId);
+      const selected = [...document.querySelectorAll("#specContent .add-on.active")].map(node => ({
+        name: node.dataset.addon === "egg" ? "加蛋" : "芝士",
+        price: 3
+      }));
+      const remark = document.getElementById("remark")?.value || "";
+      const key = [product.id, selected.map(item => item.name).join("|"), remark].join("__");
+      const exists = state.cart.find(item => item.key === key);
+
+      if (exists) {
+        exists.quantity += 1;
+      } else {
+        state.cart.push({ key, productId: product.id, name: product.name, price: product.price, icon: product.icon, quantity: 1, addOns: selected, remark });
+      }
+
+      document.getElementById("specPopup").classList.remove("active");
+      render();
+    }
+
+    function renderCart() {
+      const count = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById("cartBar").style.display = state.page === "menu" && count > 0 ? "flex" : "none";
+      document.getElementById("cartCount").textContent = `已选 ${count} 件`;
+      document.getElementById("cartAmount").textContent = `合计 ¥${money(cartTotal())}`;
+    }
+
+    function renderCheckout() {
+      const wrap = document.getElementById("checkoutContent");
+      if (!state.cart.length) {
+        wrap.innerHTML = `<div class="empty"><div class="empty-img">🛵</div><div class="muted">购物车空空的，去点一份三明治吧。</div></div>`;
+        return;
+      }
+
+      const amount = checkoutTotal();
+      wrap.innerHTML = `
+        <div class="switch">
+          <div class="pill ${state.deliveryType === "delivery" ? "active" : ""}" data-delivery="delivery">外卖</div>
+          <div class="pill ${state.deliveryType === "pickup" ? "active" : ""}" data-delivery="pickup">自提</div>
+        </div>
+        <div class="card">
+          <div class="card-title">${state.deliveryType === "delivery" ? "收货地址" : "自提门店"}</div>
+          <div class="strong">${state.deliveryType === "delivery" ? "阳光中心 A 座 12 层" : "极简三明治·中心店"}</div>
+          <div class="muted">${state.deliveryType === "delivery" ? "小明 13800000000" : "自提时间：立即自提"}</div>
+        </div>
+        <div class="card">
+          <div class="card-title">时间选择</div>
+          <div class="time-row">
+            <div class="time-pill active">${state.deliveryType === "delivery" ? "立即配送" : "立即自提"}</div>
+            <div class="time-pill">预约时间</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">商品确认</div>
+          ${state.cart.map(item => `
+            <div class="checkout-item">
+              <div class="thumb">${item.icon}</div>
+              <div class="fill">
+                <div class="strong">${item.name}</div>
+                <div class="muted">x${item.quantity} ${item.addOns.map(addOn => addOn.name).join(" / ")}</div>
+              </div>
+              <div class="strong">¥${money(itemTotal(item))}</div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="card">
+          <div class="amount-row"><span>优惠券</span><span>${amount.discount ? `已优惠 ${amount.discount} 元` : "暂无可用"}</span></div>
+          <div class="amount-row"><span>商品金额</span><span>¥${money(amount.goods)}</span></div>
+          <div class="amount-row"><span>配送费</span><span>¥${money(amount.deliveryFee)}</span></div>
+          <div class="amount-row"><span>优惠金额</span><span>-¥${money(amount.discount)}</span></div>
+          <div class="amount-row pay"><span>实付金额</span><span>¥${money(amount.pay)}</span></div>
+        </div>
+        <textarea placeholder="备注：少酱、加热、放前台"></textarea>
+        <button class="primary-btn pay-btn" id="payBtn">微信支付 ¥${money(amount.pay)}</button>
+      `;
+    }
+
+    function pay() {
+      const amount = checkoutTotal();
+      state.orders.unshift({
+        id: `o${Date.now()}`,
+        status: state.deliveryType === "delivery" ? "配送中" : "待自提",
+        items: [...state.cart],
+        pay: amount.pay
+      });
+      state.cart = [];
+      document.getElementById("deliveryPopup").classList.add("active");
+      render();
+    }
+
+    function renderProfile() {
+      document.querySelectorAll("[data-profile]").forEach(tab => tab.classList.toggle("active", tab.dataset.profile === state.profileTab));
+      const wrap = document.getElementById("profileContent");
+
+      if (state.profileTab === "orders") {
+        wrap.innerHTML = `
+          <div class="status-grid">
+            ${["待接单", "制作中", "待自提", "配送中", "已完成", "已取消"].map(item => `<div class="status-chip">${item}</div>`).join("")}
+          </div>
+          ${state.orders.length ? state.orders.map(order => `
+            <div class="order-card">
+              <div class="order-head"><span>订单 ${order.id}</span><span>${order.status}</span></div>
+              ${order.items.map(item => `
+                <div class="order-item">
+                  <div class="thumb">${item.icon}</div>
+                  <div class="fill">
+                    <div class="strong">${item.name}</div>
+                    <div class="muted">x${item.quantity}</div>
+                  </div>
+                  <div class="strong">¥${money(itemTotal(item))}</div>
+                </div>
+              `).join("")}
+              <div class="amount-row pay"><span></span><span>实付 ¥${money(order.pay)}</span></div>
+            </div>
+          `).join("") : `<div class="empty"><div class="empty-img">🥪</div><div class="muted">还没有订单，去点一份三明治吧。</div></div>`}
+        `;
+      }
+
+      if (state.profileTab === "coupons") {
+        wrap.innerHTML = `<div class="card"><div class="section-title" style="margin-top:0;">我的优惠券</div>${state.coupons.length ? "3元无门槛优惠券" : "暂无优惠券，首页可领取新人券。"}</div>`;
+      }
+
+      if (state.profileTab === "points") {
+        wrap.innerHTML = `<div class="card"><div class="section-title" style="margin-top:0;">我的积分</div><div style="font-size:48px;font-weight:900;">120</div><div class="muted">积分只用于兑换单品，不设置会员等级、储值、月卡。</div></div>`;
+      }
+    }
+
+    function render() {
+      renderProducts();
+      renderCart();
+      renderCheckout();
+      renderProfile();
+    }
+
+    document.addEventListener("click", event => {
+      const nav = event.target.closest("[data-nav]");
+      if (nav) showPage(nav.dataset.nav);
+
+      const delivery = event.target.closest("[data-delivery]");
+      if (delivery) {
+        state.deliveryType = delivery.dataset.delivery;
+        document.querySelectorAll("[data-delivery]").forEach(item => item.classList.toggle("active", item.dataset.delivery === state.deliveryType));
+        render();
+      }
+
+      const category = event.target.closest("[data-category]");
+      if (category) {
+        state.activeCategory = category.dataset.category;
+        showPage("menu");
+      }
+
+      const tab = event.target.closest("[data-tab]");
+      if (tab) {
+        state.activeCategory = tab.dataset.tab;
+        render();
+      }
+
+      const product = event.target.closest("[data-product]");
+      if (product) openSpec(product.dataset.product);
+
+      const addon = event.target.closest("[data-addon]");
+      if (addon) addon.classList.toggle("active");
+
+      const addCartBtn = event.target.closest("[data-add-cart]");
+      if (addCartBtn) addCart(addCartBtn.dataset.addCart);
+
+      const close = event.target.closest("[data-close]");
+      if (close) document.getElementById(close.dataset.close).classList.remove("active");
+
+      const profile = event.target.closest("[data-profile]");
+      if (profile) {
+        state.profileTab = profile.dataset.profile;
+        render();
+      }
+
+      if (event.target.id === "claimCoupon") {
+        state.coupons = [{ id: "c001", title: "新人券", amount: 3 }];
+        document.getElementById("couponPopup").classList.remove("active");
+        render();
+      }
+
+      if (event.target.id === "payBtn") pay();
+    });
+
+    render();
+  </script>
+</body>
+</html>
